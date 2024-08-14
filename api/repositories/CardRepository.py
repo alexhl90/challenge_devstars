@@ -1,8 +1,8 @@
 from typing import List
 from mypy_boto3_dynamodb.service_resource import Table
 from factories import TableFactory
-from models import Card, UpdateCardColumn, CreateCard, UpdateCard
-from boto3.dynamodb.conditions import Key, Attr
+from models import Card, CardColumn, CreateCard, UpdateCard
+from boto3.dynamodb.conditions import Key, Attr, And
 from ulid import ULID
 from datetime import datetime
 
@@ -57,6 +57,19 @@ class CardRepository:
         self.__table.put_item(Item=item)
         return Card.model_validate(item)
 
+    def find_one(self, card_info=CardColumn) -> Card:
+        query_expression = {
+            "KeyConditionExpression": And(
+                Key("column_id").eq(card_info.column_id),
+                Key("id").eq(card_info.id),
+            ),
+        }
+        page = self.__table.query(
+            **query_expression,
+        )
+        cards = [Card.model_validate(item) for item in page["Items"]]
+        return cards[0] if len(cards) > 0 else None
+
     def list(self, id: str, order="ASC", key="column_id") -> List[Card]:
         query_expression = {
             "KeyConditionExpression": Key(key).eq(id),
@@ -88,16 +101,21 @@ class CardRepository:
         )
         return Card.model_validate(page["Attributes"])
 
-    def updateColumn(self, card_info: UpdateCardColumn, new_column: str) -> Card:
-        page = self.__table.update_item(
-            Key={"column_id": card_info.column_id, "id": card_info.id},
-            UpdateExpression="SET #column_id = :new_column",
-            ExpressionAttributeValues={":new_column": new_column},
-            ExpressionAttributeNames={"#column_id": "column_id"},
-            ReturnValues="ALL_NEW",
-        )
-        return Card.model_validate(page["Attributes"])
+    def updateColumn(self, card_info: CardColumn, new_column: str) -> Card:
+        card = self.find_one(card_info)
 
-    def delete(self, card_info: UpdateCardColumn) -> None:
-        response = self.__table.delete_item(Key={**card_info.model_dump()})
+        if card:
+            card.column_id = new_column
+            new_card = self.create(card)
+            self.delete(card_info)
+            return new_card
+        return None
+
+    def delete(self, card_info: CardColumn) -> None:
+        response = self.__table.delete_item(
+            Key={
+                "column_id": card_info.column_id,
+                "id": card_info.id,
+            }
+        )
         print(f"Deleted card: {response}")

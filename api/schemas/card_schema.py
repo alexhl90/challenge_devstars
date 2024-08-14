@@ -1,6 +1,6 @@
 from graphene import ObjectType, String, List, Mutation, Field, DateTime, Int
 from database import db_session
-from models import Card, CreateCard, UpdateCard, UpdateCardColumn
+from models import Card, CreateCard, UpdateCard, CardColumn
 
 
 class CardType(ObjectType):
@@ -15,17 +15,12 @@ class CardType(ObjectType):
 
 
 class CardQuery(ObjectType):
-    card = Field(CardType, id=String(required=True))
     cards_by_column = List(
         CardType, column_id=String(required=True), order=String(default_value="ASC")
     )
     cards_by_board = List(
         CardType, board_id=String(required=True), order=String(default_value="ASC")
     )
-
-    def resolve_card(self, info, id: str):
-        database = db_session()
-        return database.card_repository.get(id)
 
     def resolve_cards_by_column(self, info, column_id: str, order: str):
         database = db_session()
@@ -147,7 +142,7 @@ class DeleteCardM(Mutation):
 
     def mutate(root, info, id: str, column_id: str):
         database = db_session()
-        database.card_repository.delete(UpdateCardColumn(id=id, column_id=column_id))
+        database.card_repository.delete(CardColumn(id=id, column_id=column_id))
         return DeleteCardM(id=id, column_id=column_id)
 
 

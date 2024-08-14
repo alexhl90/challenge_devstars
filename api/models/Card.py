@@ -28,6 +28,6 @@ class UpdateCard(BaseModel):
     assigned_to: str
     priority: int
 
-class UpdateCardColumn(BaseModel):
+class CardColumn(BaseModel):
     id: str
     column_id: str
