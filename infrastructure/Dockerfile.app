@@ -1,11 +1,7 @@
-FROM node:20.16.0-bullseye
+FROM node:20.16.0-alpine3.20 as dependencies
 WORKDIR /app
-
-
-
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
-#RUN pip install --no-cache-dir --upgrade -r requirements-test.txt
-
-COPY ./api .
-
-CMD ["uvicorn", "main:app", "--host=0.0.0.0", "--port=8000", "--reload"]
+RUN yarn add -D vite
+RUN yarn
+FROM dependencies as node_server
+WORKDIR /app
+CMD yarn && yarn dev
