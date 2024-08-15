@@ -59,6 +59,12 @@ VITE_REACT_APP_GRAPHQL=http://localhost:8000/graphql
 
 All the commands are simplified using a Makefile. [Makefile tutorial](https://makefiletutorial.com/#why-do-makefiles-exist)
 
+## Live demo
+
+Here a place with the live demo [kanban board](https://kanban.talachas.dev/)
+
+Demo [Video](https://www.loom.com/share/5f2c50ca815449fcaea045c8480375a6?sid=004e58cc-7cf0-4bb7-a057-79108d7cd9a0)
+
 #### Run
 
 just run
@@ -72,5 +78,7 @@ if its a windows env you could try with the bat file
 run_project.bat
 ```
 
----
+
+
+
 
