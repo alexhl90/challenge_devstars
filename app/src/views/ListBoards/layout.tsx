@@ -8,7 +8,7 @@ import BoardCard from "./BoardCard"
 
 const BoardsView = () => {
   const { loading, error, data, refetch: reloadBoards } = useQuery(GET_BOARDS);
-  const [deleteBoardM, { data: deleteResponse }] = useMutation(DELETE_BOARD);
+  const [deleteBoardM, _] = useMutation(DELETE_BOARD);
   const [showModal, setShowModal] = useState(false);
   const [editBoardInfo, setEditBoardInfo] = useState({});
 
@@ -16,7 +16,7 @@ const BoardsView = () => {
     reloadBoards()
   }, []);
 
-  const deleteBoard = useMemo(() => async (boardId: string) => {
+  const deleteBoard = useMemo(() => async (boardId: React.Key) => {
     await deleteBoardM({ variables: { id: boardId } })
     reloadBoards()
   }, []);
@@ -34,7 +34,10 @@ const BoardsView = () => {
         {loading && (<p>Loading...</p>)}
         {error && <p>Error...</p>}
         <ol className="grid grid-cols-4 gap-4 mx-10">
-          {data && data.boards.map((board) => (
+          {data && data.boards.map((board: {
+            id: React.Key,
+            name: string,
+          }) => (
             <BoardCard
               key={board.id}
               board={board}

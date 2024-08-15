@@ -14,7 +14,7 @@ const CreateBoardModal = ({ isOpen, onClose, initialData, reload }: any) => {
         }
     }, [initialData]);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         const formData = {
             ...initialData,

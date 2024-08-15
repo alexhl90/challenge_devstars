@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import ColumnComponent from "./Column"
+import ColumnComponent, { ColumnProps } from "./Column"
 import { GET_COLUMNS } from "../../graphql/queries/column"
 import { useQuery } from '@apollo/client';
 import { useMemo, useState } from 'react';
@@ -7,8 +7,13 @@ import { DnDProvider } from "../../contexts/dndContexts";
 import CreateCardModal from '../../components/createCardModal';
 import CreateColumnModal from '../../components/createColumnModal';
 
+type KanbanBoardProps = {
+  createModalState: any[],
+  createColumnState: any[]
+}
+
 const KanbanBoard = (
-  { createModalState, createColumnState }
+  { createModalState, createColumnState }: KanbanBoardProps
 ) => {
   const { boardId } = useParams();
   const { loading, error, data, refetch } = useQuery(GET_COLUMNS, {
@@ -22,14 +27,14 @@ const KanbanBoard = (
     setLoadingRefetch(true);
     await refetch();
     setLoadingRefetch(false);
-  })
+  }, [])
   return (
     <DnDProvider reloadBoard={reloadBoard}>
       <div className="flex space-x-4 p-4" >
         {(loading) && <p>Loading columns...</p>}
         {error && <p>Error Loading columns...</p>}
         {
-          (data && !loadingRefetch) && data.columns.map((col) => (
+          (data && !loadingRefetch) && data.columns.map((col: ColumnProps) => (
             <ColumnComponent
               key={col.id}
               columnInfo={col}

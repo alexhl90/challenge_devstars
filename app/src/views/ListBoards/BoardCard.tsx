@@ -1,6 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-const BoardCard = ({ board, onEdit, onDelete }) => {
+
+type BoardProps = {
+  id: React.Key | string,
+  name: string,
+}
+
+type BoardCardProps = {
+  board: BoardProps,
+  onEdit: Function,
+  onDelete: Function,
+}
+
+const BoardCard = ({ board, onEdit, onDelete }: BoardCardProps) => {
   return (
     <div className="bg-blue-500 text-white p-4 rounded-lg flex-col justify-between items-center">
       {/* Board Name */}

@@ -3,26 +3,39 @@ import { DnDContext } from "../../contexts/dndContexts";
 import { useMutation } from "@apollo/client";
 import { DELETE_CARD } from "../../graphql/mutations/card";
 import EditCardModal from "../../components/editCardModal";
-const Card = ({ cardInfo }) => {
-    const [isEditModalOpen, setEditModalOpen] = useState(false);
 
+export type CardProps = {
+    id: string;
+    columnId: string;
+    title: string;
+    description: string;
+    assignedTo: string;
+}
+
+type CardsComponentProps = {
+    cardInfo: CardProps
+}
+
+const Card = ({ cardInfo }: CardsComponentProps) => {
+    const [isEditModalOpen, setEditModalOpen] = useState(false);
+    // @ts-ignore
     const { dropCard, setItem, reloadBoard } = useContext(DnDContext);
-    const [deleteCardMutation, { data: deleteResponse }] = useMutation(DELETE_CARD);
+    const [deleteCardMutation, _] = useMutation(DELETE_CARD);
 
     const dragStart = useMemo(() => {
-        return (evt, card) => {
+        return (evt: React.BaseSyntheticEvent, card: CardProps) => {
             evt.target.classList.add("opacity-50");
             setItem({ ...card, card: evt.target })
         };
     }, []);
     const dragEnd = useMemo(() => {
-        return (evt) => {
+        return (evt: React.BaseSyntheticEvent) => {
             evt.target.classList.remove("opacity-50");
             dropCard()
         };
     }, []);
 
-    const handleDeleteCard = useMemo(() => async (cardInfo) => {
+    const handleDeleteCard = useMemo(() => async (cardInfo: CardProps) => {
         await deleteCardMutation({
             variables: { cardId: cardInfo.id, columnId: cardInfo.columnId },
         });
@@ -38,7 +51,6 @@ const Card = ({ cardInfo }) => {
             onDragStart={(e) => dragStart(e, cardInfo)}
             onDragEnd={(e) => dragEnd(e)}
         >
-            {/* Título y botón de editar */}
             <div className="flex justify-between items-start">
                 <h3 className="text-lg font-semibold text-left">{cardInfo.title || "No Tittle"}</h3>
                 <div>
@@ -48,12 +60,10 @@ const Card = ({ cardInfo }) => {
                 </div>
             </div>
 
-            {/* Descripción */}
             <p className="text-gray-700 flex-grow text-left">
                 {cardInfo.description || "No description provided"}
             </p>
 
-            {/* Asignado a */}
             <div className="flex justify-between space-x-2 pt-2 border-t border-gray-200">
                 <div className="flex items-center">
                     {cardInfo.assignedTo && (

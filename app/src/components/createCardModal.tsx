@@ -4,19 +4,24 @@ import { CREATE_CARD } from '../graphql/mutations/card';
 import { DnDContext } from '../contexts/dndContexts';
 import { useParams } from 'react-router-dom';
 
-const CreateCardModal = ({ isOpen, onClose, columns }) => {
+type CreateCardModalProps = {
+    isOpen: boolean,
+    onClose: Function,
+    columns: any[],
+}
+const CreateCardModal = ({ isOpen, onClose, columns }: CreateCardModalProps) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [assignedTo, setAssignedTo] = useState('');
     const [columnId, setColumn] = useState('');
-    const [createCardM, { data: mutationSuccess }] = useMutation(CREATE_CARD);
+    const [createCardM, _] = useMutation(CREATE_CARD);
     const { boardId } = useParams();
-
+    // @ts-ignore
     const { reloadBoard } = useContext(DnDContext);
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.BaseSyntheticEvent) => {
         e.preventDefault();
         const formData = {
             title,
@@ -113,7 +118,7 @@ const CreateCardModal = ({ isOpen, onClose, columns }) => {
                     <div className="flex justify-end">
                         <button
                             type="button"
-                            onClick={onClose}
+                            onClick={()=>onClose()}
                             className="mr-4 bg-gray-500 text-white px-4 py-2 rounded-lg"
                         >
                             Cancel

@@ -1,26 +1,38 @@
 
-import React, { useState, useRef, useMemo, useEffect } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { useMutation } from '@apollo/client';
 import { UPDATE_CARD_COLUMN } from '../graphql/mutations/card';
 
-export const DnDContext = React.createContext();
+
+type DndProviderProps = {
+    reloadBoard: Function,
+    children: React.ReactNode,
+}
+
+export const DnDContext = React.createContext(null);
 
 
-export const DnDProvider = ({ reloadBoard, children, }) => {
+export const DnDProvider = ({ reloadBoard, children, }: DndProviderProps) => {
     const itemRef = useRef(null);
     const newColumnId = useRef(null);
+    // @ts-ignore
     const setItem = useMemo(() => (item) => { itemRef.current = item }, []);
-    const setContainer = useMemo(() => (container: string) => { newColumnId.current = container }, []);
-    const [updateCardColumnM, { data: mutationUpdate }] = useMutation(UPDATE_CARD_COLUMN);
+    // @ts-ignore
+    const setContainer = useMemo(() => (container) => { newColumnId.current = container }, []);
+    const [updateCardColumnM, _] = useMutation(UPDATE_CARD_COLUMN);
 
 
 
     const dropCard = useMemo(() => async () => {
+        // @ts-ignore
         if (itemRef.current?.columnId !== newColumnId?.current) {
+            // @ts-ignore
             itemRef.current?.card.classList.add("invisible");
             const payload = {
-                cardId: itemRef.current.id,
-                columnId: itemRef.current.columnId,
+                // @ts-ignore
+                cardId: itemRef.current?.id,
+                // @ts-ignore
+                columnId: itemRef.current?.columnId,
                 newColumnId: newColumnId.current,
             }
             await updateCardColumnM({
@@ -32,6 +44,7 @@ export const DnDProvider = ({ reloadBoard, children, }) => {
 
     return (
         <DnDContext.Provider
+            // @ts-ignore
             value={{
                 setItem,
                 setContainer,

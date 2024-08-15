@@ -9,9 +9,10 @@ const CreateColumnModal = ({ isOpen, onClose, initialData }: any) => {
     const [title, setTitle] = useState('');
     const [order, setOrder] = useState('');
     if (!isOpen) return null;
-    const [upsertColumnM, { data: mutationSuccess }] = useMutation((Object.keys(initialData).length > 0 ? UPDATE_COLUMN : CREATE_COLUMN));
+    const [upsertColumnM, _] = useMutation((Object.keys(initialData).length > 0 ? UPDATE_COLUMN : CREATE_COLUMN));
 
     const { boardId } = useParams();
+    // @ts-ignore
     const { reloadBoard } = useContext(DnDContext);
 
     useEffect(() => {
@@ -22,7 +23,7 @@ const CreateColumnModal = ({ isOpen, onClose, initialData }: any) => {
         }
     }, [initialData]);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.BaseSyntheticEvent) => {
 
         e.preventDefault();
         const formData = {

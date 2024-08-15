@@ -1,13 +1,20 @@
-import { useState, useEffect, useContext} from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useMutation } from '@apollo/client';
 import { UPDATE_CARD } from '../graphql/mutations/card';
 import { DnDContext } from '../contexts/dndContexts';
 
-const EditCardModal = ({ isOpen, onClose, initialData }) => {
+type EditCardModalProps = {
+    isOpen: boolean,
+    onClose: Function,
+    initialData: any,
+}
+
+const EditCardModal = ({ isOpen, onClose, initialData }: EditCardModalProps) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [assignedTo, setAssignedTo] = useState('');
-    const [updateCardM, { data: mutationSuccess }] = useMutation(UPDATE_CARD);
+    const [updateCardM, _] = useMutation(UPDATE_CARD);
+    // @ts-ignore
     const { reloadBoard } = useContext(DnDContext);
 
     useEffect(() => {
@@ -20,7 +27,7 @@ const EditCardModal = ({ isOpen, onClose, initialData }) => {
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         const updatedData = {
             id: initialData.id,
@@ -94,7 +101,7 @@ const EditCardModal = ({ isOpen, onClose, initialData }) => {
                     <div className="flex justify-end">
                         <button
                             type="button"
-                            onClick={onClose}
+                            onClick={() => onClose()}
                             className="mr-4 bg-gray-500 text-white px-4 py-2 rounded-lg"
                         >
                             Cancel
