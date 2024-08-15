@@ -1,4 +1,19 @@
 services:
+  app:
+    image: app_kanban
+    container_name: app_kanban
+    env_file:
+      - ../app/.env
+    build:
+      context: ../
+      dockerfile: ./infrastructure/Dockerfile.app
+    volumes:
+      - ../app/:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - ENV=local
+    
   fastapi:
     image: api_kanban
     container_name: api_graphql
@@ -24,3 +39,4 @@ services:
     volumes:
       - ./shared/dynamo:/home/dynamodblocal/data
     working_dir: /home/dynamodblocal
+

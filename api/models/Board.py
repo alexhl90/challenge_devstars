@@ -5,6 +5,10 @@ from datetime import datetime
 
 
 class Board(BaseModel):
-    id: ULID
+    id: str
     name: str
     created_at: datetime
+
+class UpdateBoard(BaseModel):
+    id: str
+    name: str

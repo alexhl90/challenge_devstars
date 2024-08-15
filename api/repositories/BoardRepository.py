@@ -1,7 +1,7 @@
 from typing import List
 from mypy_boto3_dynamodb.service_resource import Table
 from factories.DynamoDBFactory import TableFactory
-from models import Board, Pagination, default_page
+from models import Board, Pagination, default_page, UpdateBoard
 from datetime import datetime
 from ulid import ULID
 
@@ -30,6 +30,19 @@ class BoardRepository:
             )
         )
         return [Board.model_validate(item) for item in page["Items"]]
+    def update(self, update_board_info: UpdateBoard) -> Board:
+        page = self.__table.update_item(
+            Key={
+                "id": update_board_info.id,
+            },
+            UpdateExpression="SET #name = :name_value",
+            ExpressionAttributeValues={
+                ":name_value": update_board_info.name,
+            },
+            ExpressionAttributeNames={"#name": "name"},
+            ReturnValues="ALL_NEW",
+        )
+        return Board.model_validate(page["Attributes"])
 
     def get_by_id(self, board_id: str) -> Board:
         response = self.__table.get_item(Key={"id": board_id})
