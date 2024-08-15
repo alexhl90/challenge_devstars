@@ -54,7 +54,8 @@ const EditCardModal = ({ isOpen, onClose, initialData }) => {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Enter task title"
+                            placeholder="Enter card title"
+                            required
                         />
                     </div>
 
@@ -69,6 +70,7 @@ const EditCardModal = ({ isOpen, onClose, initialData }) => {
                             onChange={(e) => setDescription(e.target.value)}
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="Enter task description"
+                            required
                         />
                     </div>
 
@@ -84,6 +86,7 @@ const EditCardModal = ({ isOpen, onClose, initialData }) => {
                             onChange={(e) => setAssignedTo(e.target.value)}
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="Enter assignee name"
+                            required
                         />
                     </div>
 

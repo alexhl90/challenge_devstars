@@ -69,4 +69,3 @@ class ColumnRepository:
 
     def delete(self, column_info: DeleteColumn) -> None:
         response =self.__table.delete_item(Key={**column_info.model_dump()})
-        print(f"Deleted column: {response}")

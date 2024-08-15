@@ -118,4 +118,3 @@ class CardRepository:
                 "id": card_info.id,
             }
         )
-        print(f"Deleted card: {response}")

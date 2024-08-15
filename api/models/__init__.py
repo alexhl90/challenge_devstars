@@ -1,7 +1,7 @@
 from .Pagination import Pagination, default_page
 from .Card import Card, CreateCard, UpdateCard, CardColumn
 from .Column import Column, CreateColumn, DeleteColumn, UpdateColumn
-from .Board import Board
+from .Board import Board, UpdateBoard
 
 __all__ = [
     "Card",
@@ -15,4 +15,5 @@ __all__ = [
     "Board",
     "Pagination",
     "default_page",
+    "UpdateBoard",
 ]

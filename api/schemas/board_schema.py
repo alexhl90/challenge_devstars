@@ -1,5 +1,6 @@
 from graphene import ObjectType, String, List, Mutation, Field, DateTime
 from database import db_session
+from models import UpdateBoard
 
 
 class BoardType(ObjectType):
@@ -15,7 +16,7 @@ class BoardQuery(ObjectType):
     def resolve_board(self, info, board_id):
         database = db_session()
         return database.board_repository.get_by_id(board_id)
-    
+
     def resolve_boards(self, info):
         database = db_session()
         return database.board_repository.list()
@@ -35,18 +36,36 @@ class CreateBoardAction(Mutation):
         return CreateBoardAction(**board.model_dump())
 
 
+class UpdateBoardM(Mutation):
+    class Arguments:
+        id = String()
+        name = String()
+
+    id = String()
+    name = String()
+    created_at = String()
+
+    def mutate(self, info, id: str, name: str):
+        database = db_session()
+        column = database.board_repository.update(
+            UpdateBoard(id=id, name=name,)
+        )
+        return UpdateBoardM(**column.model_dump())
+
+
 class DeleteBoardAction(Mutation):
     class Arguments:
         id = String()
 
     id = String()
 
-    def mutate(root, info, board_id: str):
+    def mutate(root, info, id: str):
         database = db_session()
-        database.board_repository.delete_board(board_id)
-        return DeleteBoardAction(board_id=id)
+        database.board_repository.delete_board(id)
+        return DeleteBoardAction(id=id)
 
 
 class BoardMutations(ObjectType):
     create_board = CreateBoardAction.Field()
     delete_board = DeleteBoardAction.Field()
+    update_board = UpdateBoardM.Field()

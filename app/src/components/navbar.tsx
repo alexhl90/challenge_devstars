@@ -1,8 +1,14 @@
 import { Link } from "react-router-dom";
+
+type BoardNavBarProps = {
+    buttonAction: Function,
+    buttonText: string,
+};
+
 const BoardNavBar = ({
     buttonAction,
     buttonText,
-}) => {
+}: BoardNavBarProps) => {
     return (
         <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
             <div className="flex items-center">

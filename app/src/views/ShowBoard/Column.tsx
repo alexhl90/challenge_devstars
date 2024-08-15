@@ -1,15 +1,27 @@
-import { useMemo, useContext } from "react"
+import { useMemo, useContext, useState } from "react"
 import Card from "./Card"
 import { GET_COLUMN_CARDS } from "../../graphql/queries/card"
-import { useQuery } from '@apollo/client';
+import { DELETE_COLUMN } from "../../graphql/mutations/column"
+import { useQuery, useMutation } from '@apollo/client';
 import { DnDContext } from "../../contexts/dndContexts";
+import CreateColumnModal from '../../components/createColumnModal';
 
 const ColumnComponent = ({
     columnInfo,
     isLoadingRefetch,
 }) => {
-    const { loading, error, data,  } = useQuery(GET_COLUMN_CARDS, { variables: { columnId: columnInfo?.id }, fetchPolicy: 'no-cache' });
-    const { setContainer } = useContext(DnDContext);
+    const { loading, error, data, } = useQuery(GET_COLUMN_CARDS, { variables: { columnId: columnInfo?.id }, fetchPolicy: 'no-cache' });
+    const { setContainer, reloadBoard } = useContext(DnDContext);
+    const [editColumnModal, setEditColumnModal] = useState(false);
+
+    const [deleteColMutation, { data: deleteResponse }] = useMutation(DELETE_COLUMN);
+
+    const handleDeleteCol = useMemo(() => async (colInfo) => {
+        await deleteColMutation({
+            variables: { boardId: colInfo.boardId, id: colInfo.id },
+        });
+        reloadBoard();
+    }, [])
     const onDragEnterHandler = useMemo(() => {
         return (id: string) => setContainer(id)
     }, []);
@@ -24,6 +36,17 @@ const ColumnComponent = ({
                 ))}
                 {!loading && data && data.cardsByColumn.length === 0 && <p className="h-80">No Cards found</p>}
             </ul>
+
+            <div className="flex justify-between items-end">
+
+                <button className="text-gray-500 hover:text-gray-700 hover:text-lg mt-6" onClick={() => setEditColumnModal(true)}>
+                    Edit ✎
+                </button>
+                <button className="text-gray-500 hover:text-gray-700 hover:text-lg mt-6" onClick={() => handleDeleteCol(columnInfo)}>
+                    Delete ✖
+                </button>
+            </div>
+            {editColumnModal && <CreateColumnModal isOpen={editColumnModal} onClose={() => setEditColumnModal(false)} initialData={columnInfo} />}
         </div>
     );
 };
