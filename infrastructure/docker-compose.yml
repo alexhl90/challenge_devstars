@@ -18,7 +18,7 @@ services:
     image: api_kanban
     container_name: api_graphql
     env_file:
-      - ../.env
+      - ../api/.env
     build:
       context: ../
       dockerfile: ./infrastructure/Dockerfile.backend
@@ -32,8 +32,6 @@ services:
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
     image: "amazon/dynamodb-local:latest"
     container_name: dynamodb
-    # env_file:
-    #   - .env
     ports:
       - 4000:8000
     volumes:
